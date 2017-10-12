@@ -6,29 +6,36 @@ use Cake\Chronos\Date;
 
 class Taiyaki
 {
-    private $base_price = 100;
     private $data;
+    private $attr_readers = [
+        'anko',
+        'size',
+        'price',
+        'produced_on',
+        'expire_on',
+    ];
 
-    public function __construct($anko, $size)
+    public function __construct($anko, $size, $price = 100)
     {
-        $this->data['anko'] = $anko;
-        $this->data['size'] = $size;
-        $this->setPrice();
+        $this->setAnko($anko);
+        $this->setSize($size);
+        $this->setPrice($price);
         $this->setDate();
     }
 
-    public function isExpired($today = null)
+    private function setAnko($anko)
     {
-        if (is_null($today)) {
-            $today = Date::today();
-        }
-
-        return $this->data['expire_on']->lt($today);
+        $this->data['anko'] = $anko;
     }
 
-    private function setPrice()
+    private function setSize($size)
     {
-        $this->data['price'] = $this->base_price;
+        $this->data['size'] = $size;
+    }
+
+    private function setPrice($price)
+    {
+        $this->data['price'] = $price;
         if ($this->data['anko'] == '白あん') {
             $this->data['price'] += 30;
         }
@@ -45,8 +52,21 @@ class Taiyaki
         $this->data['expire_on'] = $today->addDays(3);
     }
 
+    public function isExpired($today = null)
+    {
+        if (is_null($today)) {
+            $today = Date::today();
+        }
+
+        return $this->data['expire_on']->lt($today);
+    }
+
     public function __get($name)
     {
+        if (!in_array($name, $this->attr_readers)) {
+            return;
+        }
+
         return $this->data[$name] ?? null;
     }
 
