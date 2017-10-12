@@ -21,6 +21,11 @@ class Taiyaki
         }
     }
 
+    public function __toString()
+    {
+        return sprintf('あんこ: %s, 大きさ: %s', $this->anko, $this->size);
+    }
+
 }
 
 class TaiyakiTest extends TestCase
@@ -29,18 +34,19 @@ class TaiyakiTest extends TestCase
      * @test
      * @dataProvider taiyakiProvider
      */
-    public function taiyaki($anko, $size)
+    public function taiyaki($anko, $size, $str)
     {
         $taiyaki = new Taiyaki($anko, $size);
         $this->assertSame($anko, $taiyaki->anko);
         $this->assertSame($size, $taiyaki->size);
+        $this->assertSame($str, (string) $taiyaki);
     }
 
     public function taiyakiProvider()
     {
         return [
-            ['あずき', 'ふつう'],
-            ['白あん', '大きめ'],
+            ['あずき', 'ふつう', 'あんこ: あずき, 大きさ: ふつう'],
+            ['白あん', '大きめ', 'あんこ: 白あん, 大きさ: 大きめ'],
         ];
     }
 }
