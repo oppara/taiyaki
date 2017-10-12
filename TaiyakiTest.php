@@ -6,10 +6,12 @@ use PHPUnit\Framework\TestCase;
 class Taiyaki
 {
     private $anko;
+    private $size;
 
-    public function __construct($anko)
+    public function __construct($anko, $size)
     {
         $this->anko = $anko;
+        $this->size = $size;
     }
 
     public function __get($name)
@@ -27,17 +29,18 @@ class TaiyakiTest extends TestCase
      * @test
      * @dataProvider taiyakiProvider
      */
-    public function taiyaki($anko)
+    public function taiyaki($anko, $size)
     {
-        $taiyaki = new Taiyaki($anko);
+        $taiyaki = new Taiyaki($anko, $size);
         $this->assertSame($anko, $taiyaki->anko);
+        $this->assertSame($size, $taiyaki->size);
     }
 
     public function taiyakiProvider()
     {
         return [
-            ['あずき'],
-            ['白あん'],
+            ['あずき', 'ふつう'],
+            ['白あん', '大きめ'],
         ];
     }
 }
