@@ -6,6 +6,8 @@ use Cake\Chronos\Date;
 
 class Taiyaki
 {
+    const EXPIRE_DATE = 3;
+
     private $data;
     private $attr_readers = [
         'anko',
@@ -49,7 +51,7 @@ class Taiyaki
     {
         $today = Date::today();
         $this->data['produced_on'] = $today;
-        $this->data['expire_on'] = $today->addDays(3);
+        $this->data['expire_on'] = $today->addDays(self::EXPIRE_DATE);
     }
 
     public function isExpired($today = null)
@@ -117,17 +119,19 @@ class TaiyakiTest extends TestCase
         $this->assertSame((string) Date::today(), (string) $taiyaki->produced_on);
 
         // 賞味期限 = 製造日 + 3日
-        $expected = (string) Date::today()->addDays(3);
+        $expected = (string) Date::today()->addDays(Taiyaki::EXPIRE_DATE);
         $this->assertSame($expected, (string) $taiyaki->expire_on);
 
         // 当日なら食べられる
         $this->assertFalse($taiyaki->isExpired());
 
         // 3日目まで食べられる
-        $this->assertFalse($taiyaki->isExpired(Date::today()->addDays(3)));
+        $days = Taiyaki::EXPIRE_DATE;
+        $this->assertFalse($taiyaki->isExpired(Date::today()->addDays($days)));
 
         // 4日目を過ぎると食べられない
-        $this->assertTrue($taiyaki->isExpired(Date::today()->addDays(4)));
+        $days = Taiyaki::EXPIRE_DATE + 1;
+        $this->assertTrue($taiyaki->isExpired(Date::today()->addDays($days)));
     }
 
 }
